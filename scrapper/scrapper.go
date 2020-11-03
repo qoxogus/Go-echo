@@ -20,18 +20,19 @@ type extractedJob struct {
 	summary  string
 }
 
-var baseURL string = "https://kr.indeed.com/jobs?q=python&limit=50"
-
 //얼마나 많은 페이지가 있는지 알아내는 프로그램
-func main() {
+
+//Scrape Indeed by a term
+func scrape(term string) {
+	var baseURL string = "https://kr.indeed.com/jobs?q=" + term + "&limit=50"
 	var jobs []extractedJob
 	c := make(chan []extractedJob)
-	totalPages := getPages()
+	totalPages := getPages(baseURL)
 	//fmt.Println(totalPages)
 
 	for i := 0; i < totalPages; i++ {
 		//extractedJobs := getPage(i)
-		go getPage(i, c)
+		go getPage(i, baseURL, c)
 		//jobs = append(jobs, extractedJobs...)
 	}
 
@@ -63,10 +64,10 @@ func writeJobs(jobs []extractedJob) {
 	}
 }
 
-func getPage(page int, mainC chan<- []extractedJob) {
+func getPage(page int, url string, mainC chan<- []extractedJob) {
 	var jobs []extractedJob
 	c := make(chan extractedJob)
-	pageURL := baseURL + "&start=" + strconv.Itoa(page*50) //=page*50 	string이 아니라 숫자니까 go에 포함된 패키지를 이용해 형변환해서 넣는다 생각 (int to asci/Itoa)
+	pageURL := url + "&start=" + strconv.Itoa(page*50) //=page*50 	string이 아니라 숫자니까 go에 포함된 패키지를 이용해 형변환해서 넣는다 생각 (int to asci/Itoa)
 	fmt.Println("Requestring", pageURL)
 	res, err := http.Get(pageURL)
 	checkErr(err)
@@ -119,9 +120,9 @@ func cleanString(str string) string {
 	//Join은 배열을 가져와서 합치는 역할 (seperator 이용)
 }
 
-func getPages() int {
+func getPages(url string) int {
 	pages := 0
-	res, err := http.Get(baseURL)
+	res, err := http.Get(url)
 	checkErr(err)
 	checkCode(res) //response(응답)
 
