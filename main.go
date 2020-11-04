@@ -1,6 +1,7 @@
 package main
 
 import (
+	"os"
 	"strings"
 
 	"Scrapper"
@@ -16,12 +17,15 @@ func handleHome(c echo.Context) error {
 	return c.File("home.html")
 }
 
+const fileName string = "jobs.csv"
+
 func handleScrape(c echo.Context) error {
+	defer os.Remove(fileName)
 	term := strings.ToLower(Scrapper.CleanString(c.FormValue("term")))
 	Scrapper.Scrape(term)
 	// fmt.Println(c.FormValue("term")) //term == python
 	// return nil
-	return c.Attachment("jobs.csv", "job.csv")
+	return c.Attachment(fileName, fileName)
 	//return c.File("home.html")
 }
 
