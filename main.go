@@ -16,8 +16,10 @@ func handleHome(c echo.Context) error {
 
 func handleScrape(c echo.Context) error {
 	term := strings.ToLower(scrapper.CleanString(c.FormValue("term")))
+	scrapper.Scrape(term)
 	// fmt.Println(c.FormValue("term")) //term == python
-	return nil
+	// return nil
+	return c.Attachment("jobs.csv", "job.csv")
 	//return c.File("home.html")
 }
 
