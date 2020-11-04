@@ -1,5 +1,22 @@
 package main
 
+import (
+	"net/http"
+
+	"github.com/labstack/echo"
+)
+
+// func main() {
+// 	scrapper.Scrape("term")
+// }
+
 func main() {
-	scrapper.Scrape("term")
+
+	e := echo.New()
+	e.GET("/", func(c echo.Context) error {
+		return c.String(http.StatusOK, "Hello World!")
+	})
+
+	e.Logger.Fatal(e.Start(":1323")) // localhost:1323
+
 }
