@@ -3,11 +3,13 @@ package main
 import (
 	"strings"
 
+	"Scrapper"
+
 	"github.com/labstack/echo"
 )
 
 // func main() {
-// 	scrapper.Scrape("term")
+//     scrapper.Scrape("term")
 // }
 
 func handleHome(c echo.Context) error {
@@ -15,8 +17,8 @@ func handleHome(c echo.Context) error {
 }
 
 func handleScrape(c echo.Context) error {
-	term := strings.ToLower(scrapper.CleanString(c.FormValue("term")))
-	scrapper.Scrape(term)
+	term := strings.ToLower(Scrapper.CleanString(c.FormValue("term")))
+	Scrapper.Scrape(term)
 	// fmt.Println(c.FormValue("term")) //term == python
 	// return nil
 	return c.Attachment("jobs.csv", "job.csv")
