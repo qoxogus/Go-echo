@@ -101,11 +101,11 @@ func getPage(page int, url string, mainC chan<- []extractedJob) {
 func extractJob(card *goquery.Selection, c chan<- extractedJob) {
 	id, _ := card.Attr("data-jk")
 	//fmt.Println(id)
-	title := cleanString(card.Find(".title>a").Text())
+	title := CleanString(card.Find(".title>a").Text())
 	//fmt.Println(title)
-	location := cleanString(card.Find(".sjcl").Text())
-	salary := cleanString(card.Find(".salaryText").Text())
-	summary := cleanString(card.Find(".summary").Text())
+	location := CleanString(card.Find(".sjcl").Text())
+	salary := CleanString(card.Find(".salaryText").Text())
+	summary := CleanString(card.Find(".summary").Text())
 	c <- extractedJob{
 		id:       id,
 		title:    title,
@@ -114,7 +114,8 @@ func extractJob(card *goquery.Selection, c chan<- extractedJob) {
 		summary:  summary}
 }
 
-func cleanString(str string) string {
+//CelanString cleans a string
+func CleanString(str string) string {
 	return strings.Join(strings.Fields(strings.TrimSpace(str)), " ") //TrimSpace 스페이스를 지운다
 	//모든공백제거후 택스트로만 된 배열을 만든것
 	//Join은 배열을 가져와서 합치는 역할 (seperator 이용)
