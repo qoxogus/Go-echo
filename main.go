@@ -15,3 +15,5 @@ func main() {
 	e.GET("/", handleHello)
 	e.Logger.Fatal(e.Start(":1323"))
 }
+
+//read code and study
