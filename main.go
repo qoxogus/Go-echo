@@ -1,18 +1,24 @@
 package main
 
 import (
-	"net/http"
+	"fmt"
 
 	"github.com/labstack/echo"
 )
 
-func handleHello(c echo.Context) error {
-	return c.String(http.StatusOK, "Hello World")
+func handleMain(c echo.Context) error {
+	return c.File("main.html")
+}
+
+func handleScr(c echo.Context) error {
+	fmt.Println(c.FormValue("description"))
+	return nil
 }
 
 func main() {
 	e := echo.New()
-	e.GET("/", handleHello)
+	e.GET("/", handleMain)
+	e.POST("/scrape", handleScr)
 	e.Logger.Fatal(e.Start(":1323"))
 }
 
