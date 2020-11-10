@@ -1,6 +1,7 @@
 package main
 
 import (
+	"crypto/subtle"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -26,9 +27,13 @@ type Hamster struct {
 	Type string `json:"type"`
 }
 
-func handleMain(c echo.Context) error {
-	// return c.String(http.StatusOK, "Hello, Taehyeon!!\n")
-	return c.File("main.html")
+// func handleMain(c echo.Context) error {
+// 	// return c.String(http.StatusOK, "Hello, Taehyeon!!\n")
+// 	return c.File("main.html")
+// }
+
+func yallo(c echo.Context) error {
+	return c.String(http.StatusOK, "yallo from the web side!")
 }
 
 func getCats(c echo.Context) error {
@@ -126,10 +131,19 @@ func main() {
 		Format: `[${time_rfc3339}]  ${status}  ${method} ${host}${path} ${latency_human}` + "\n",
 	}))
 
+	g.Use(middleware.BasicAuth(func(username, password string, c echo.Context) (bool, error) {
+		// check in the DB
+		if subtle.ConstantTimeCompare([]byte(username), []byte("bae")) == 1 &&
+			subtle.ConstantTimeCompare([]byte(password), []byte("1234")) == 1 {
+			return true, nil
+		}
+		return false, nil
+	}))
+
 	g.GET("/main", mainAdmin)
 	// g.GET("/main", mainAdmin)  //middleware를 추가하는 방법 3  핸들러메서드 뒤 메서드에 직접 추가
-
-	e.GET("/", handleMain)
+	e.GET("/", yallo)
+	// e.GET("/", handleMain)
 	e.GET("/cats/:data", getCats)
 
 	//e.POST("/scrape", _)
