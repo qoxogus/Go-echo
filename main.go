@@ -8,6 +8,7 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo"
+	"github.com/labstack/echo/middleware"
 )
 
 type Cat struct {
@@ -106,13 +107,34 @@ func addHamster(c echo.Context) error {
 // 	return nil
 // }
 
+func mainAdmin(c echo.Context) error {
+	return c.String(http.StatusOK, "horay you are one the secret admin main page!")
+	//http://localhost:1323/admin/main 으로 들어갔을때 뜨는 문구
+}
+
 func main() {
 	fmt.Println("Welcom to the server")
+
 	e := echo.New()
+
+	g := e.Group("/admin") //middleware를 추가하는 방법 1  그룹에 선언
+	// g := e.Group("/admin", middleware.Logger()) //middleware를 추가하는 방법 1  그룹에 선언
+
+	//this logs the server interaction
+	// g.Use(middleware.Logger()) //middleware를 추가하는 방법 2  USE로 선언
+	g.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
+		Format: `[${time_rfc3339}]  ${status}  ${method} ${host}${path} ${latency_human}` + "\n",
+	}))
+
+	g.GET("/main", mainAdmin)
+	// g.GET("/main", mainAdmin)  //middleware를 추가하는 방법 3  핸들러메서드 뒤 메서드에 직접 추가
+
 	e.GET("/", handleMain)
 	e.GET("/cats/:data", getCats)
+
 	//e.POST("/scrape", _)
-	e.POST("/cats/:data", getCats)
+	// e.POST("/cats/:data", getCats)
+
 	e.Logger.Fatal(e.Start(":1323"))
 }
 
