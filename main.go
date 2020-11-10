@@ -1,11 +1,29 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
+	"log"
 	"net/http"
 
 	"github.com/labstack/echo"
 )
+
+type Cat struct {
+	Name string `json:"name"`
+	Type string `json:"type"`
+}
+
+type Dog struct {
+	Name string `json:"name"`
+	Type string `json:"type"`
+}
+
+type Hamster struct {
+	Name string `json:"name"`
+	Type string `json:"type"`
+}
 
 func handleMain(c echo.Context) error {
 	// return c.String(http.StatusOK, "Hello, Taehyeon!!\n")
@@ -34,12 +52,62 @@ func getCats(c echo.Context) error {
 	})
 }
 
+func addCat(c echo.Context) error {
+	cat := Cat{}
+
+	defer c.Request().Body.Close()
+
+	b, err := ioutil.ReadAll(c.Request().Body)
+	if err != nil {
+		log.Printf("Failed reading the request body for addCats: %s\n", err)
+		return c.String(http.StatusInternalServerError, "")
+	}
+
+	err = json.Unmarshal(b, &cat)
+	if err != nil {
+		log.Printf("Failed unmarshaling in addCats: %s\n", err)
+		return c.String(http.StatusInternalServerError, "")
+	}
+
+	log.Printf("this is your cat: %#v\n", cat)
+	return c.String(http.StatusOK, "we got your cat!")
+}
+
+func addDog(c echo.Context) error {
+	dog := Dog{}
+
+	defer c.Request().Body.Close()
+
+	err := json.NewDecoder(c.Request().Body).Decode(&dog)
+	if err != nil {
+		log.Printf("Failed processing addDog request: %s\n", err)
+		return echo.NewHTTPError(http.StatusInternalServerError)
+	}
+
+	log.Printf("this is your dog: %#v", dog)
+	return c.String(http.StatusOK, "we got your dog!")
+}
+
+func addHamster(c echo.Context) error {
+	hamster := Hamster{}
+
+	err := c.Bind(&hamster)
+	if err != nil {
+		log.Printf("Failed processing addHamster request: %s\n", err)
+		return echo.NewHTTPError(http.StatusInternalServerError)
+	}
+
+	log.Printf("this is your hamster: %#v", hamster)
+	return c.String(http.StatusOK, "we got your hamster!")
+}
+
 // func handleScr(c echo.Context) error {
 // 	fmt.Println(c.FormValue("description"))
 // 	return nil
 // }
 
 func main() {
+	fmt.Println("Welcom to the server")
 	e := echo.New()
 	e.GET("/", handleMain)
 	e.GET("/cats/:data", getCats)
