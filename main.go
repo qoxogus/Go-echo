@@ -132,7 +132,7 @@ func main() {
 	}))
 
 	g.Use(middleware.BasicAuth(func(username, password string, c echo.Context) (bool, error) {
-		// check in the DB
+		// check in the DB    기본인증 middleware
 		if subtle.ConstantTimeCompare([]byte(username), []byte("bae")) == 1 &&
 			subtle.ConstantTimeCompare([]byte(password), []byte("1234")) == 1 {
 			return true, nil
