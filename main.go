@@ -117,10 +117,22 @@ func mainAdmin(c echo.Context) error {
 	//http://localhost:1323/admin/main 으로 들어갔을때 뜨는 문구
 }
 
+////////////////////////middleware/////////////////////
+func ServerHeader(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		c.Response().Header().Set(echo.HeaderServer, "BlueBot/1.0")
+		c.Response().Header().Set("notReallyHeader", "thisHaveNoMeaning")
+
+		return next(c)
+	}
+}
+
 func main() {
 	fmt.Println("Welcom to the server")
 
 	e := echo.New()
+
+	e.Use(ServerHeader)
 
 	g := e.Group("/admin") //middleware를 추가하는 방법 1  그룹에 선언
 	// g := e.Group("/admin", middleware.Logger()) //middleware를 추가하는 방법 1  그룹에 선언
