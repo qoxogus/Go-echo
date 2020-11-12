@@ -84,7 +84,7 @@ func addDog(c echo.Context) error {
 
 	defer c.Request().Body.Close()
 
-	err := json.NewDecoder(c.Request().Body).Decode(&dog)
+2 	err := json.NewDecoder(c.Request().Body).Decode(&dog)
 	if err != nil {
 		log.Printf("Failed processing addDog request: %s\n", err)
 		return echo.NewHTTPError(http.StatusInternalServerError)
@@ -165,3 +165,4 @@ func main() {
 }
 
 //read code and study
+//code understand?
