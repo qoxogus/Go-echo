@@ -165,10 +165,3 @@ func main() {
 }
 
 //read code and study
-//read code and understand
-//read code and study
-//read code and understand
-//read code and study
-//read code and understand
-//read code and study
-//code understand
