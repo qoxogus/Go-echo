@@ -164,8 +164,4 @@ func main() {
 	e.Logger.Fatal(e.Start(":1323"))
 }
 
-//read code and study
-//read code and study
-//read code and study
-//add
 //add comment
